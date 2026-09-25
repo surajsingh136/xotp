@@ -128,6 +128,19 @@ export default function Shell({ children }) {
 
       <main className="content">{children}</main>
 
+      <button
+        className={`btn fab-sound ${snd ? 'is-on' : ''}`}
+        onClick={() => {
+          prime()
+          const v = !isSoundOn()
+          setSoundOn(v)
+          setSnd(v)
+        }}
+        title="Beep jab OTP aaye"
+      >
+        {snd ? '\uD83D\uDD0A Sound on' : '\uD83D\uDD07 Sound off'}
+      </button>
+
       <RechargeDialog open={open} onClose={() => setOpen(false)} onSuccess={onRecharged} />
     </div>
   )
