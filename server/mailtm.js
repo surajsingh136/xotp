@@ -1,6 +1,18 @@
 import { randomBytes } from 'node:crypto'
 import { config } from './config.js'
 
+const NAMES = [
+  'rahul', 'rohit', 'raj', 'ravi', 'ram', 'amit', 'arjun', 'akash', 'ankit', 'aditya', 'ajay', 'amar',
+  'anil', 'ashish', 'avinash', 'abhay', 'chetan', 'deepak', 'dhruv', 'gaurav', 'gopal', 'harish',
+  'harsh', 'hemant', 'imran', 'jatin', 'karan', 'kiran', 'kunal', 'mohit', 'mahesh', 'manish',
+  'manoj', 'mukesh', 'naveen', 'nikhil', 'nilesh', 'pankaj', 'pranav', 'prashant', 'rajesh',
+  'rahim', 'sachin', 'sanjay', 'shubham', 'siddharth', 'sohan', 'suraj', 'tarun', 'uday',
+  'vikas', 'vipul', 'vishal', 'yogesh', 'sameer', 'santosh', 'sunil', 'varun', 'vinay', 'vivek',
+  'priya', 'pooja', 'neha', 'nisha', 'nidhi', 'kavya', 'kajal', 'isha', 'divya', 'deepika',
+  'sonal', 'shreya', 'sharma', 'seema', 'rita', 'radha', 'payal', 'parul', 'monika', 'meena',
+  'mamta', 'komal', 'kirti', 'geeta', 'anjali', 'anita', 'ananya', 'aarti', 'bhavna', 'chandni',
+]
+
 async function req(path, { method = 'GET', token, body } = {}) {
   const headers = { 'Content-Type': 'application/json' }
   if (token) headers.Authorization = `Bearer ${token}`
@@ -28,9 +40,21 @@ export async function createMailbox() {
   const list = domains?.['hydra:member'] || []
   const domain = list.find((d) => d.isActive && !d.isPrivate)?.domain || list[0]?.domain
   if (!domain) throw new Error('No mail domain available right now. Please try again.')
-  const address = `xotp${randomBytes(5).toString('hex')}@${domain}`
   const password = 'Xotp@' + randomBytes(6).toString('hex')
-  await req('/accounts', { method: 'POST', body: { address, password } })
+  let address = null
+  for (let i = 0; i < 8; i++) {
+    const name = NAMES[Math.floor(Math.random() * NAMES.length)]
+    const digits = String(Math.floor(100 + Math.random() * 900))
+    const candidate = `${name}${digits}@${domain}`
+    try {
+      await req('/accounts', { method: 'POST', body: { address: candidate, password } })
+      address = candidate
+      break
+    } catch {
+      /* name taken (or transient) — pick another */
+    }
+  }
+  if (!address) throw new Error('Could not create mailbox. Please try again.')
   const tok = await req('/token', { method: 'POST', body: { address, password } })
   if (!tok?.token) throw new Error('Could not create mailbox. Please try again.')
   return { address, token: tok.token }
