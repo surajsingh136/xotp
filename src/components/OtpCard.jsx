@@ -9,12 +9,25 @@ export default function OtpCard({ order, onChanged, onCancel }) {
   const [data, setData] = useState(order)
   const [now, setNow] = useState(Date.now())
   const mounted = useRef(true)
-  const announced = useRef(order?.otp_code || null)
+  const lastId = useRef(order?.id)
+  const lastCode = useRef(order?.otp_code || null)
+
+  const announce = (code) => {
+    if (code && lastCode.current !== code) {
+      lastCode.current = code
+      playAlert()
+    }
+  }
 
   useEffect(() => {
     mounted.current = true
+    if (order?.id !== lastId.current) {
+      lastId.current = order?.id
+      lastCode.current = order?.otp_code || null
+    } else {
+      announce(order?.otp_code)
+    }
     setData(order)
-    announced.current = order?.otp_code || null
     return () => {
       mounted.current = false
     }
@@ -41,10 +54,7 @@ export default function OtpCard({ order, onChanged, onCancel }) {
         const s = await get(`/orders/${data.server}/${data.id}/status`)
         if (!mounted.current) return
         setData((d) => ({ ...d, ...s }))
-        if (s.otp_code && announced.current !== s.otp_code) {
-          announced.current = s.otp_code
-          playAlert()
-        }
+        announce(s.otp_code)
         onChanged?.(s)
       } catch {
         /* keep polling */

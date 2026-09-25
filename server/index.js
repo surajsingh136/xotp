@@ -289,10 +289,13 @@ async function orderStatus(user, o) {
     if (live.provider === 'durian') {
       const r = await durian.getMsg(o.target, o.pid)
       if (r.code === 200 && r.data) {
-        o.status = 'received'
-        o.otpCode = durian.extractOtp(r.data)
-        o.smsCode = String(r.data).slice(0, 200)
-        await blacklistLive(live, o)
+        const otp = durian.extractOtp(r.data)
+        if (otp) {
+          o.status = 'received'
+          o.otpCode = otp
+          o.smsCode = String(r.data).slice(0, 200)
+          await blacklistLive(live, o)
+        }
       } else if (Date.now() - o.createdAt >= EXPIRY) {
         await durian.passMobile(o.target, o.pid).catch(() => {})
         unmarkUsed(o.target)
