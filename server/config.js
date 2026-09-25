@@ -77,7 +77,7 @@ export const SERVER4_SERVICES = [
 export const EMAIL_SERVICES = [
   { id: 'gmail', name: 'Gmail (RailOne)', icon: '\uD83D\uDCE7', price: 9, mail: 'smsbower', service: 'swl', domain: 'gmail.com' },
   { id: 'gmail-irctc', name: 'Gmail (IRCTC)', icon: '\uD83D\uDCE7', price: 9, mail: 'smsbower', service: 'us', domain: 'gmail.com' },
-  { id: 'mailtm', name: 'Temp Mail', icon: '\uD83D\uDCE8', price: 9, mail: 'mailtm' },
+  { id: 'mailtm', name: 'Temp Mail', icon: '\uD83D\uDCE8', price: 0, free: true, mail: 'mailtm' },
 ]
 
 export const DURIAN_COUNTRY = pick('DURIAN_COUNTRY', 'in')

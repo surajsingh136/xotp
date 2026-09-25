@@ -152,7 +152,7 @@ export default function OtpCard({ order, onChanged, onCancel }) {
                 {'\u2715 Cancel & refund'}
               </Button>
               <span className="faint" style={{ fontSize: 'var(--step--1)' }}>
-                {fmtINR(data?.cost)} {data?.cost ? 'charged' : ''}
+                {data?.cost > 0 ? `${fmtINR(data?.cost)} charged` : 'Free'}
               </span>
             </>
           )}

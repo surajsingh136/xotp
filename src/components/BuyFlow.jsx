@@ -111,7 +111,7 @@ export default function BuyFlow({ servers, defaultServer, scope, title, sub, hea
           ) : (
             <div className="grid-auto">
               {catalog.map((s) => {
-                const cost = s.price > 0 ? fmtINR(s.price) : 'Market'
+                const cost = s.free ? 'Free' : s.price > 0 ? fmtINR(s.price) : 'Market'
                 return (
                   <div
                     key={s.id}
@@ -195,7 +195,7 @@ export default function BuyFlow({ servers, defaultServer, scope, title, sub, hea
             <div className="row-between" style={{ padding: 'var(--sp-3)', background: 'var(--surface-sunken)', borderRadius: 'var(--r-md)' }}>
               <span className="muted">Price</span>
               <span className="mono tabular" style={{ fontSize: 'var(--step-1)', fontWeight: 600 }}>
-                {sel.price > 0 ? fmtINR(sel.price) : 'Market'}
+                {sel.free ? 'Free' : sel.price > 0 ? fmtINR(sel.price) : 'Market'}
               </span>
             </div>
 

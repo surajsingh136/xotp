@@ -9,7 +9,7 @@ export default function BuyEmail() {
       defaultServer="email"
       scope="email"
       title="Buy email"
-      sub="Gmail via SMSBower \u00B7 Temp Mail via mail.tm \u2014 real inboxes, billed per code."
+      sub={'Gmail \u00B7 Temp Mail \u2014 real inboxes, billed per code.'}
       headActions={
         <Link to="/buy">
           <Button size="sm" variant="ghost">Buy number</Button>

@@ -580,7 +580,7 @@ async function api(req, res, path_, q, b) {
     const news = [
       { id: 1, type: 'info', title: 'Welcome to xOTP', body: 'Top up your wallet and pick a service to start receiving OTPs.' },
       { id: 2, type: 'success', title: 'Servers 1\u20134 are live', body: 'Rail services are delivered from real networks (durianrcs, GrizzlySMS, PhantomUnion & SMSBower).' },
-      { id: 3, type: 'success', title: 'Email is live', body: 'Gmail (SMSBower) and Temp Mail (mail.tm) deliver real inbox codes.' },
+      { id: 3, type: 'success', title: 'Email is live', body: 'Gmail and Temp Mail deliver real inbox codes.' },
     ]
     return ok(res, {
       balance: u.beta,
