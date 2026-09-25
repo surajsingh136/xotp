@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../ui.jsx'
 
-const SITE = 'classic-practice-bundle-inc.trycloudflare.com'
+const SITE = 'xotp.onrender.com'
 
 const DEMO = [
   { net: 'server 1', service: 'WhatsApp', number: '+91 9XXXX 41207' },
