@@ -322,9 +322,10 @@ async function orderStatus(user, o) {
     } else {
       const client = live.provider === 'smsbower' ? smsbower : grizzly
       const s = await client.getStatus(o.activationId)
-      if (s.startsWith('STATUS_OK')) {
+      const code = s.startsWith('STATUS_OK') ? String(s.split(':')[1] || '').trim() : ''
+      if (code) {
         o.status = 'received'
-        o.otpCode = s.split(':')[1] || null
+        o.otpCode = code
         client.setStatus(o.activationId, 6).catch(() => {})
       } else if (s === 'STATUS_CANCEL') {
         unmarkUsed(o.target)

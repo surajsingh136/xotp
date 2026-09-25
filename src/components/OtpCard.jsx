@@ -9,12 +9,12 @@ export default function OtpCard({ order, onChanged, onCancel }) {
   const [data, setData] = useState(order)
   const [now, setNow] = useState(Date.now())
   const mounted = useRef(true)
-  const dataRef = useRef(order)
+  const announced = useRef(order?.otp_code || null)
 
   useEffect(() => {
     mounted.current = true
     setData(order)
-    dataRef.current = order
+    announced.current = order?.otp_code || null
     return () => {
       mounted.current = false
     }
@@ -40,10 +40,11 @@ export default function OtpCard({ order, onChanged, onCancel }) {
       try {
         const s = await get(`/orders/${data.server}/${data.id}/status`)
         if (!mounted.current) return
-        const prev = dataRef.current
         setData((d) => ({ ...d, ...s }))
-        dataRef.current = { ...dataRef.current, ...s }
-        if (s.status === 'received' && s.otp_code && prev.status !== 'received') playAlert()
+        if (s.otp_code && announced.current !== s.otp_code) {
+          announced.current = s.otp_code
+          playAlert()
+        }
         onChanged?.(s)
       } catch {
         /* keep polling */

@@ -65,7 +65,7 @@ export default function Shell({ children }) {
       </button>
 
       <aside className={`rail ${open ? 'open' : ''}`}>
-        <a href="/dashboard" className="brand">
+        <a href="/dashboard" className="brand" onClick={() => setOpen(false)}>
           <span className="brand-mark">{'\u2713'}</span>
           <span>
             <span className="brand-name">xOTP</span>
@@ -87,7 +87,7 @@ export default function Shell({ children }) {
 
         <nav className="nav" style={{ flex: 1 }}>
           {NAV.map((n) => (
-            <NavLink key={n.to} to={n.to} className="nav-link">
+            <NavLink key={n.to} to={n.to} className="nav-link" onClick={() => setOpen(false)}>
               <span className="nav-icon">{n.icon}</span>
               <span>{n.label}</span>
             </NavLink>

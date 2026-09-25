@@ -5,7 +5,7 @@ import { useToast } from '../notify.jsx'
 import { PageHead, Card, Button, Badge, Modal, Empty, Skeleton, Tabs, fmtINR } from '../ui.jsx'
 import OtpCard from './OtpCard.jsx'
 
-export default function BuyFlow({ servers, defaultServer, scope, title, sub }) {
+export default function BuyFlow({ servers, defaultServer, scope, title, sub, headActions }) {
   const { refresh } = useAuth()
   const toast = useToast()
 
@@ -74,7 +74,7 @@ export default function BuyFlow({ servers, defaultServer, scope, title, sub }) {
 
   return (
     <div>
-      <PageHead title={title} sub={sub} />
+      <PageHead title={title} sub={sub}>{headActions}</PageHead>
 
       <div className="stack">
         <Card>
