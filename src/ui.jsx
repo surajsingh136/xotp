@@ -20,6 +20,8 @@ export const mmss = (s) => {
   return `${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`
 }
 
+export const copyTarget = (t) => String(t || '').replace(/^\+91\s?/, '').replace(/\s+/g, '')
+
 export function Card({ children, className = '', pad = true, hover, accent, style }) {
   return (
     <div

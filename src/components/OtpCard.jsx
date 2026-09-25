@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { get, post } from '../api.js'
 import { useToast } from '../notify.jsx'
-import { Badge, Button, CopyButton, mmss, fmtINR } from '../ui.jsx'
+import { Badge, Button, CopyButton, mmss, fmtINR, copyTarget } from '../ui.jsx'
+import { playAlert } from '../sound.js'
 
 export default function OtpCard({ order, onChanged, onCancel }) {
   const toast = useToast()
   const [data, setData] = useState(order)
   const [now, setNow] = useState(Date.now())
   const mounted = useRef(true)
+  const dataRef = useRef(order)
 
   useEffect(() => {
     mounted.current = true
     setData(order)
+    dataRef.current = order
     return () => {
       mounted.current = false
     }
@@ -37,7 +40,10 @@ export default function OtpCard({ order, onChanged, onCancel }) {
       try {
         const s = await get(`/orders/${data.server}/${data.id}/status`)
         if (!mounted.current) return
+        const prev = dataRef.current
         setData((d) => ({ ...d, ...s }))
+        dataRef.current = { ...dataRef.current, ...s }
+        if (s.status === 'received' && s.otp_code && prev.status !== 'received') playAlert()
         onChanged?.(s)
       } catch {
         /* keep polling */
@@ -54,6 +60,17 @@ export default function OtpCard({ order, onChanged, onCancel }) {
       onCancel?.(data.id)
     } catch (e) {
       toast.show('error', e.message)
+    }
+  }
+
+  const copyT = async () => {
+    const t = data?.target
+    if (!t) return
+    try {
+      await navigator.clipboard.writeText(copyTarget(t))
+      toast.show('success', String(t).includes('@') ? 'Email copied' : 'Number copied (no +91)')
+    } catch {
+      toast.show('error', 'Copy failed')
     }
   }
 
@@ -93,7 +110,21 @@ export default function OtpCard({ order, onChanged, onCancel }) {
           </Badge>
         </div>
 
-        <div className="otp-target">{data?.target}</div>
+        <div
+          className="otp-target otp-copy"
+          role="button"
+          tabIndex={0}
+          title="Click to copy"
+          onClick={copyT}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              copyT()
+            }
+          }}
+        >
+          {data?.target}
+        </div>
 
         {waiting && <div className="otp-slot">{'\u2022'.repeat(6)}</div>}
 
@@ -113,7 +144,8 @@ export default function OtpCard({ order, onChanged, onCancel }) {
         )}
 
         <div className="otp-actions">
-          {waiting ? (
+          <CopyButton text={copyTarget(data?.target)} label={String(data?.target || '').includes('@') ? 'Copy email' : 'Copy number'} />
+          {waiting && (
             <>
               <Button variant="ghost" size="sm" onClick={cancel}>
                 {'\u2715 Cancel & refund'}
@@ -122,8 +154,6 @@ export default function OtpCard({ order, onChanged, onCancel }) {
                 {fmtINR(data?.cost)} {data?.cost ? 'charged' : ''}
               </span>
             </>
-          ) : (
-            <CopyButton text={data?.target} label="Copy number" />
           )}
         </div>
       </div>

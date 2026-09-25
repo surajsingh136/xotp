@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth.jsx'
 import { ThemeToggle } from '../theme.jsx'
+import { isSoundOn, setSoundOn, prime } from '../sound.js'
 import { Button, Avatar, fmtINR } from '../ui.jsx'
 import RechargeDialog from './RechargeDialog.jsx'
 import { get } from '../api.js'
@@ -19,6 +20,17 @@ export default function Shell({ children }) {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [adding, setAdding] = useState(false)
+  const [snd, setSnd] = useState(isSoundOn())
+
+  useEffect(() => {
+    const f = () => prime()
+    window.addEventListener('pointerdown', f, { once: true })
+    window.addEventListener('keydown', f, { once: true })
+    return () => {
+      window.removeEventListener('pointerdown', f)
+      window.removeEventListener('keydown', f)
+    }
+  }, [])
 
   const addFunds = async () => {
     setAdding(true)
@@ -92,6 +104,19 @@ export default function Shell({ children }) {
           </div>
           <div className="row">
             <ThemeToggle grow />
+            <Button
+              variant="ghost"
+              size="sm"
+              title="Beep when an OTP arrives"
+              onClick={() => {
+                prime()
+                const v = !isSoundOn()
+                setSoundOn(v)
+                setSnd(v)
+              }}
+            >
+              {snd ? 'Sound on' : 'Sound off'}
+            </Button>
             <Button variant="ghost" size="sm" onClick={doSignOut}>
               Sign out
             </Button>
