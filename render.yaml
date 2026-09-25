@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: xotp
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: DURIAN_BASE
+        sync: false
+      - key: DURIAN_NAME
+        sync: false
+      - key: DURIAN_APIKEY
+        sync: false
+      - key: GRIZZLY_BASE
+        sync: false
+      - key: GRIZZLY_APIKEY
+        sync: false
+      - key: GRIZZLY_COUNTRY
+        value: "22"
+      - key: PHANTOM_BASE
+        sync: false
+      - key: PHANTOM_KEY
+        sync: false
+      - key: PHANTOM_COUNTRY
+        value: "IN"
+      - key: SMSBOWER_BASE
+        sync: false
+      - key: SMSBOWER_APIKEY
+        sync: false
+      - key: SMSBOWER_COUNTRY
+        value: "22"
+      - key: MAILTM_BASE
+        value: "https://api.mail.tm"
